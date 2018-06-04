@@ -9,10 +9,14 @@ module.exports = class WeatherCheckerMain {
     weatherApi.request(process.env.NODE_LATITUDE, process.env.NODE_LONGITUDE, function(error, weathers) {
       if(!error) {
         console.log('request ok.')
-        const current = weathers[0]
-        const next = weathers[1]
+        const current = weathers[6]
+        const next = weathers[7]
         if(current.Rainfall == 0 && next.Rainfall > 0) {
-          googleHome.tell("雨が振りそうです。")
+          googleHome.tell("雨が降りそうです。")
+        }
+        const past = weather[4]
+        if(past.Rainfall > 0 && current.Rainfall == 0) {
+        	googleHome.tell("雨がやみました。")
         }
       } else {
         console.log(error)

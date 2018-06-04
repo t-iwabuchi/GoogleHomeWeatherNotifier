@@ -29,7 +29,8 @@ module.exports = class WeatherApi {
     return 'https://map.yahooapis.jp/weather/V1/place?' + 
       'output=json' + 
       '&coordinates=' + longitude + ',' + latitude +
-      '&appid=' + appId
+      '&appid=' + appId +
+      '&past=1'
   }
 }
 
