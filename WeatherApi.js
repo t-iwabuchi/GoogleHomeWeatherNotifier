@@ -18,7 +18,13 @@ module.exports = class WeatherApi {
     request(options, function (error, response, body) {
       if (!error && response.statusCode == 200) {
         const json = JSON.parse(body);
-        callback(error, json.Feature[0].Property.WeatherList.Weather)
+        const weathers = json.Feature[0].Property.WeatherList.Weather
+        const weatherStatus = new Object();
+        weatherStatus.past = weathers[5]
+        weatherStatus.current = weathers[6]
+        weatherStatus.next = weathers[7]
+
+        callback(error, weatherStatus)
       } else {
         callback(error, null)
       }
