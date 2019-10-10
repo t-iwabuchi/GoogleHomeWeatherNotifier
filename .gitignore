@@ -1,3 +1,6 @@
+# Status file
+/status.json
+
 # Logs
 logs
 *.log
