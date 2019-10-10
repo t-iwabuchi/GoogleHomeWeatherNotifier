@@ -10,6 +10,15 @@ module.exports = class WeatherCheckerMain {
     const WeatherApi = require('./WeatherApi')
     const weatherApi = new WeatherApi(process.env.NODE_YAHOO_APP_ID)
 
+    let dt    = new Date();
+    dt.setTime(dt.getTime() + 32400000); // 1000 * 60 * 60 * 9(hour)
+    const year  = dt.getFullYear();
+    const month = dt.getMonth()+1;
+    const day   = dt.getDate();
+    const hour  = dt.getHours();
+    const min   = dt.getMinutes()
+    const date  = "" + year + month + day + hour + min;
+
     // ファイルの存在確認
     const isExistFile = function(file) {
       try {
@@ -71,6 +80,7 @@ module.exports = class WeatherCheckerMain {
           const diff = begin_time - current_time
           status.notice = diff
           googleHome.tell(`降雨通知です。${diff}分後に、${get_amount(weathers, begin_time)}ミリの雨が降りそうです。`)
+          console.log(`${date}: notice rainfall before ${diff} min`)
         }
 
         // 降雨30分前
@@ -78,6 +88,7 @@ module.exports = class WeatherCheckerMain {
         {
           status.notice = 30
           googleHome.tell(`降雨通知です。30分後に、${get_amount(weathers, begin_time)}ミリの雨が降りそうです。`)
+          console.log(`${date}: notice rainfall before 30 min`)
         }
 
         // 降雨10分前
@@ -85,6 +96,7 @@ module.exports = class WeatherCheckerMain {
         {
           status.notice = 10
           googleHome.tell(`降雨通知です。まもなく、雨が降り出します。`)
+          console.log(`${date}: notice rainfall just before`)
         }
 
         // 降り始め
@@ -93,6 +105,7 @@ module.exports = class WeatherCheckerMain {
           status.isRain = true
           status.notice = 0
           googleHome.tell("降雨通知です。雨が降り始めました。")
+          console.log(`${date}: notice rainfall start`)
         }
 
         // 降り終わり
@@ -101,6 +114,7 @@ module.exports = class WeatherCheckerMain {
           status.isRain = false
           status.notice = -1
           googleHome.tell("降雨通知です。雨が止みました。")
+          console.log(`${date}: notice rainfall stop`)
         }
 
 
