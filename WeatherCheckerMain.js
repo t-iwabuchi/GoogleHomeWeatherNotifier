@@ -104,7 +104,9 @@ module.exports = class WeatherCheckerMain {
         }
 
 
-        fs.writeFile(datafile, JSON.stringify(status))
+        fs.writeFile(datafile, JSON.stringify(status), function(err, result) {
+          if(err) console.log('error', err)
+        })
       } else {
         console.log(error)
       }
