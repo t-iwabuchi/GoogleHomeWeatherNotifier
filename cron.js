@@ -1,5 +1,5 @@
 const cronJob = require('cron').CronJob;
-const cronTime = "00 00,10,20,30,40,50 00,01,09-23 * * *";
+const cronTime = "00 00,10,20,30,40,50 00,01,09-21 * * *";
 const job = new cronJob({
   cronTime: cronTime
    , onTick: function() {
