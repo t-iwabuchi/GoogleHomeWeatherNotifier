@@ -36,7 +36,8 @@ module.exports = class WeatherApi {
       'output=json' + 
       '&coordinates=' + longitude + ',' + latitude +
       '&appid=' + appId +
-      '&past=1'
+      '&past=0' +
+      '&interval=5'
   }
 }
 
