@@ -9,6 +9,37 @@ module.exports = class WeatherCheckerMain {
 
     const WeatherApi = require('./WeatherApi')
     const weatherApi = new WeatherApi(process.env.NODE_YAHOO_APP_ID)
+
+    // ファイルの存在確認
+    const isExistFile = function(file) {
+      try {
+        fs.statSync(file)
+        return true
+      } catch(err) {
+        if(err.code === 'ENOENT') return false
+      }
+    }
+
+    // 降雨量が0でなくなる時間
+    const begin_rainfall_time = function(weathers) {
+      const rainfall = weathers.filter(function(item, index){
+        if (item.Rainfall != 0.0) return true;
+      })
+      if (rainfall.length == 0) return null
+
+      return rainfall[0].Date
+    }
+
+    // 降雨量が0でなくなる時間
+    const get_amount = function(weathers, time) {
+      const match = weathers.filter(function(item, index){
+        if (item.Date == time) return true;
+      })
+      if (match.length == 0) return null
+
+      return match[0].Rainfall
+    }
+
     weatherApi.request(process.env.NODE_LATITUDE, process.env.NODE_LONGITUDE, function(error, weathers) {
       if(!error) {
         console.log('request ok.')
@@ -18,7 +49,7 @@ module.exports = class WeatherCheckerMain {
           notice : -1,
         }
 
-        if (this.isExistFile(datafile)) {
+        if (isExistFile(datafile)) {
           const file = JSON.parse(fs.readFileSync(datafile, 'utf8'))
           status.isRain = file.isRain
           status.notice = file.notice
@@ -28,7 +59,7 @@ module.exports = class WeatherCheckerMain {
         const current_time = weathers.filter(function(item, index){
           if (item.Type == "observation") return true;
         })[0].Date
-        const begin_time = this.begin_rainfall_time(weathers)
+        const begin_time = begin_rainfall_time(weathers)
 
         // 降雨予報がなければ、通知フラグはリセット
         if (begin_time == null)
@@ -39,14 +70,14 @@ module.exports = class WeatherCheckerMain {
         {
           const diff = begin_time - current_time
           status.notice = diff
-          googleHome.tell(`降雨通知です。${diff}分後に、${this.get_amount(weathers, begin_time)}ミリの雨が降りそうです。`)
+          googleHome.tell(`降雨通知です。${diff}分後に、${get_amount(weathers, begin_time)}ミリの雨が降りそうです。`)
         }
 
         // 降雨30分前
         if (status.isRain == false && status.notice > 30 && begin_time == current_time + 30)
         {
           status.notice = 30
-          googleHome.tell(`降雨通知です。30分後に、${this.get_amount(weathers, begin_time)}ミリの雨が降りそうです。`)
+          googleHome.tell(`降雨通知です。30分後に、${get_amount(weathers, begin_time)}ミリの雨が降りそうです。`)
         }
 
         // 降雨10分前
@@ -78,35 +109,5 @@ module.exports = class WeatherCheckerMain {
         console.log(error)
       }
     })
-  }
-
-  // ファイルの存在確認
-  static isExistFile(file) {
-    try {
-      fs.statSync(file)
-      return true
-    } catch(err) {
-      if(err.code === 'ENOENT') return false
-    }
-  }
-
-  // 降雨量が0でなくなる時間
-  static begin_rainfall_time(weathers) {
-    const rainfall = weathers.filter(function(item, index){
-      if (item.Rainfall != 0.0) return true;
-    })
-    if (rainfall.length == 0) return null
-
-    return rainfall[0].Date
-  }
-
-  // 降雨量が0でなくなる時間
-  static get_amount(weathers, time) {
-    const match = weathers.filter(function(item, index){
-      if (item.Date == time) return true;
-    })
-    if (match.length == 0) return null
-
-    return match[0].Rainfall
   }
 }
