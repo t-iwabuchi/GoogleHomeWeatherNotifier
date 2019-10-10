@@ -18,7 +18,7 @@ module.exports = class WeatherCheckerMain {
           notice : -1,
         }
 
-        if (fs.statSync(datafile)) {
+        if (isExistFile(datafile)) {
           const file = JSON.parse(fs.readFileSync(datafile, 'utf8'))
           status.isRain = file.isRain
           status.notice = file.notice
@@ -78,6 +78,16 @@ module.exports = class WeatherCheckerMain {
         console.log(error)
       }
     })
+  }
+
+  // ファイルの存在確認
+  isExistFile(file) {
+    try {
+      fs.statSync(file)
+      return true
+    } catch(err) {
+      if(err.code === 'ENOENT') return false
+    }
   }
 
   // 降雨量が0でなくなる時間
