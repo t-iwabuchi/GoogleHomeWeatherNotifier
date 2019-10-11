@@ -79,7 +79,7 @@ module.exports = class WeatherCheckerMain {
         {
           const diff = begin_time - current_time
           status.notice = diff
-          googleHome.tell(`降雨通知です。${diff}分後に、${get_amount(weathers, begin_time)}ミリの雨が降りそうです。`)
+          googleHome.tell(`降雨通知です。${diff}分後に、${get_amount(weathers, begin_time)}ミリの雨がふりそうです。`)
           console.log(`${date}: notice rainfall before ${diff} min`)
         }
 
@@ -87,7 +87,7 @@ module.exports = class WeatherCheckerMain {
         if (status.isRain == false && status.notice > 30 && begin_time == current_time + 30)
         {
           status.notice = 30
-          googleHome.tell(`降雨通知です。30分後に、${get_amount(weathers, begin_time)}ミリの雨が降りそうです。`)
+          googleHome.tell(`降雨通知です。30分後に、${get_amount(weathers, begin_time)}ミリの雨がふりそうです。`)
           console.log(`${date}: notice rainfall before 30 min`)
         }
 
@@ -95,25 +95,25 @@ module.exports = class WeatherCheckerMain {
         if (status.isRain == false && status.notice > 10 && begin_time <= current_time + 10 && current_time != begin_time)
         {
           status.notice = 10
-          googleHome.tell(`降雨通知です。まもなく、雨が降り出します。`)
+          googleHome.tell(`降雨通知です。まもなく、雨がふりそうです。`)
           console.log(`${date}: notice rainfall just before`)
         }
 
-        // 降り始め
+        // ふり始め
         if (status.isRain == false && current_time == begin_time)
         {
           status.isRain = true
           status.notice = 0
-          googleHome.tell("降雨通知です。雨が降り始めました。")
+          googleHome.tell("降雨通知です。雨がふり始めました。")
           console.log(`${date}: notice rainfall start`)
         }
 
-        // 降り終わり
+        // ふり終わり
         if (status.isRain == true && (begin_time == null || begin_time > current_time + 30) )
         {
           status.isRain = false
           status.notice = -1
-          googleHome.tell("降雨通知です。雨が止みました。")
+          googleHome.tell("降雨通知です。雨がやみました。")
           console.log(`${date}: notice rainfall stop`)
         }
 
