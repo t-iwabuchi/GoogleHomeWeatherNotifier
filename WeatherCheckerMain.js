@@ -75,7 +75,7 @@ module.exports = class WeatherCheckerMain {
           status.notice = -1
 
         // 降雨を最初に検知した場合（30分以内）
-        if (status.isRain == false && status.notice == -1 && begin_time != null && begin_time <= current_time + 30)
+        if (status.isRain == false && status.notice == -1 && begin_time != null && begin_time <= current_time + 30 && current_time != begin_time)
         {
           const diff = begin_time - current_time
           status.notice = diff
