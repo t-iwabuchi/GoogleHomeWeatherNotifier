@@ -51,7 +51,9 @@ Error: get key failed from google
     at process._tickCallback (internal/process/next_tick.js:68:7)
 ```
 
-`google-home-notifier`というパッケージが依存している`google-tts-api`というパッケージのバージョンが古いことが原因です。  
+`google-home-notifier`というパッケージが依存している`google-tts-api`というパッケージのバージョンが古いことが原因です。
+
+#### 手順1
 `node_modules/google-home-notifier/package.json`を開き、上側のようになっている箇所を、下側のように変更してください。
 
 ```
@@ -87,3 +89,11 @@ Error: get key failed from google
 ```
 に変更してください。
 変更前の箇所は `0.0.2` などになっていることがありますが、その場合も　`0.0.4` に変更してください。
+
+#### 手順2
+その後、以下のコマンドで更新してください。
+
+```
+cd node_modules/google-home-notifier
+npm update google-tts-api
+```
