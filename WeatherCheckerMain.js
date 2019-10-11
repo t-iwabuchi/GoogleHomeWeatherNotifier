@@ -92,7 +92,7 @@ module.exports = class WeatherCheckerMain {
         }
 
         // 降雨10分前
-        if (status.isRain == false && status.notice > 10 && begin_time <= current_time + 10)
+        if (status.isRain == false && status.notice > 10 && begin_time <= current_time + 10 && current_time != begin_time)
         {
           status.notice = 10
           googleHome.tell(`降雨通知です。まもなく、雨が降り出します。`)
