@@ -74,21 +74,13 @@ module.exports = class WeatherCheckerMain {
         if (begin_time == null)
           status.notice = -1
 
-        // 降雨を最初に検知した場合（60分のフラグを素通りした場合）
-        if (status.isRain == false && status.notice == -1 && begin_time != null)
+        // 降雨を最初に検知した場合（30分以内）
+        if (status.isRain == false && status.notice == -1 && begin_time != null && begin_time <= current_time + 30)
         {
           const diff = begin_time - current_time
           status.notice = diff
           googleHome.tell(`降雨通知です。${diff}分後に、${get_amount(weathers, begin_time)}ミリの雨がふりそうです。`)
           console.log(`${date}: notice rainfall before ${diff} min`)
-        }
-
-        // 降雨30分前
-        if (status.isRain == false && status.notice > 30 && begin_time == current_time + 30)
-        {
-          status.notice = 30
-          googleHome.tell(`降雨通知です。30分後に、${get_amount(weathers, begin_time)}ミリの雨がふりそうです。`)
-          console.log(`${date}: notice rainfall before 30 min`)
         }
 
         // 降雨10分前
