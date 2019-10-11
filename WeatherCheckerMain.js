@@ -29,10 +29,10 @@ module.exports = class WeatherCheckerMain {
       }
     }
 
-    // 降雨量が0でなくなる時間
+    // 雨がふり始める時間
     const begin_rainfall_time = function(weathers) {
       const rainfall = weathers.filter(function(item, index){
-        if (item.Rainfall != 0.0) return true;
+        if (item.Rainfall > 1.0) return true;
       })
       if (rainfall.length == 0) return null
 
