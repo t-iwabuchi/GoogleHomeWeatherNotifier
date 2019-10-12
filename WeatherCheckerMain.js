@@ -109,30 +109,36 @@ module.exports = class WeatherCheckerMain {
         // 降雨を最初に検知した場合（30分以内）
         if (status.isRain == false && status.notice == -1 && begin_time != null && begin_time <= current_time + 30 && current_time != begin_time)
         {
-          if (check(weathers, begin_time) == false) break
-          const diff = begin_time - current_time
-          status.notice = diff
-          googleHome.tell(`降雨通知です。${diff}分後に、${get_amount(weathers, begin_time)}ミリの雨がふりそうです。`)
-          console.log(`${date}: notice rainfall before ${diff} min`)
+          if (check(weathers, begin_time) == true)
+          {
+            const diff = begin_time - current_time
+            status.notice = diff
+            googleHome.tell(`降雨通知です。${diff}分後に、${get_amount(weathers, begin_time)}ミリの雨がふりそうです。`)
+            console.log(`${date}: notice rainfall before ${diff} min`)
+          }
         }
 
         // 降雨10分前
         if (status.isRain == false && status.notice > 10 && begin_time <= current_time + 10 && current_time != begin_time)
         {
-          if (check(weathers, begin_time) == false) break
-          status.notice = 10
-          googleHome.tell(`降雨通知です。まもなく、雨がふりそうです。`)
-          console.log(`${date}: notice rainfall just before`)
+          if (check(weathers, begin_time) == true) 
+          {
+            status.notice = 10
+            googleHome.tell(`降雨通知です。まもなく、雨がふりそうです。`)
+            console.log(`${date}: notice rainfall just before`)
+          }
         }
 
         // ふり始め
         if (status.isRain == false && current_time == begin_time)
         {
-          if (check(weathers, begin_time) == false) break
-          status.isRain = true
-          status.notice = 0
-          googleHome.tell("降雨通知です。雨がふり始めました。")
-          console.log(`${date}: notice rainfall start`)
+          if (check(weathers, begin_time) == true)
+          {
+            status.isRain = true
+            status.notice = 0
+            googleHome.tell("降雨通知です。雨がふり始めました。")
+            console.log(`${date}: notice rainfall start`)
+          }
         }
 
         // ふり終わり
