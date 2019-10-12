@@ -1,0 +1,8 @@
+{
+    "apps":[
+        {
+            "name"             : "Google-Home-Weather-Notifier",
+            "script"           : "cron.js"
+        }
+    ]
+}
