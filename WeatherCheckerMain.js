@@ -39,7 +39,39 @@ module.exports = class WeatherCheckerMain {
       return rainfall[0].Date
     }
 
-    // 降雨量が0でなくなる時間
+    // 雨がふり終わる時間
+    // 降水量が規定値を下回り、その後20分間雨が降らなければ、雨が降り止んだと判定する
+    const end_rainfall_time = function(weathers, begin_time) {
+      const rainfall = weathers.filter(function(item, index){
+        if (item.Rainfall > 1.0) return true;
+      })
+      if (rainfall.length == 0) return null
+
+      for (let i = 0; i < rainfall.length; i++)
+      {
+        if(rainfall[i].Date >= begin_time)
+          continue
+
+        if (i == rainfall.length - 1)
+          return rainfall[rainfall.length - 1].Date
+        
+        if (rainfall[i+1].Date - rainfall[i].Date > 20)
+          return rainfall[i].Date
+      }
+    }
+
+    // 特定の時間より後の降雨が判定条件に合致するか確認
+    const check = function(weathers, begin_time) {
+      const end_time = end_rainfall_time(weathers, begin_time)
+      if (end_time == null) return false
+
+      if (end_time - begin_time > 20)
+        return true
+      else
+        return false
+    }
+
+    // 降雨量の取得
     const get_amount = function(weathers, time) {
       const match = weathers.filter(function(item, index){
         if (item.Date == time) return true;
@@ -77,6 +109,7 @@ module.exports = class WeatherCheckerMain {
         // 降雨を最初に検知した場合（30分以内）
         if (status.isRain == false && status.notice == -1 && begin_time != null && begin_time <= current_time + 30 && current_time != begin_time)
         {
+          if (check(weathers, begin_time) == false) break
           const diff = begin_time - current_time
           status.notice = diff
           googleHome.tell(`降雨通知です。${diff}分後に、${get_amount(weathers, begin_time)}ミリの雨がふりそうです。`)
@@ -86,6 +119,7 @@ module.exports = class WeatherCheckerMain {
         // 降雨10分前
         if (status.isRain == false && status.notice > 10 && begin_time <= current_time + 10 && current_time != begin_time)
         {
+          if (check(weathers, begin_time) == false) break
           status.notice = 10
           googleHome.tell(`降雨通知です。まもなく、雨がふりそうです。`)
           console.log(`${date}: notice rainfall just before`)
@@ -94,6 +128,7 @@ module.exports = class WeatherCheckerMain {
         // ふり始め
         if (status.isRain == false && current_time == begin_time)
         {
+          if (check(weathers, begin_time) == false) break
           status.isRain = true
           status.notice = 0
           googleHome.tell("降雨通知です。雨がふり始めました。")
