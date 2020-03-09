@@ -9,6 +9,13 @@ NODE_YAHOO_APP_ID="xxxxx"
 NODE_LATITUDE="xx.xxxxxx"
 NODE_LONGITUDE="xxx.xxxxxx"
 ```
+各項目の意味は以下の通りです。
+| 項目名 | 概要 | 取得方法 |
+|  ---- | ---- |   ----  |
+| `NODE_GOOGLE_HOME_IP_ADDRESS` | Google HomeのIPアドレス | Google Homeアプリ |
+| `NODE_YAHOO_APP_ID` | Yahoo!デベロッパーネットワーク APIキー | [ご利用ガイド](https://developer.yahoo.co.jp/start/) |
+| `NODE_LATITUDE` | 緯度 | Googleマップ等で調べる |
+| `NODE_LONGITUDE` | 経度 | Googleマップ等で調べる |
 
 ## 実行方法
 
@@ -41,59 +48,3 @@ sudo apt install libavahi-compat-libdnssd-dev
 この問題は、Node.jsの古いバージョンを使用することで解決できる場合があります。
 Node.jsの8系において、動作することを確認しました。
 nvm を使用するなどして、Node.jsの8系で実行してみてください。
-
-### なぜだか音が鳴らない
-次のようなエラーが発生することがあります。
-
-```
-Error: get key failed from google
-    at /home/pi/bin/google-home/GoogleHomeWeatherNotifier/node_modules/google-tts-api/lib/key.js:27:13
-    at process._tickCallback (internal/process/next_tick.js:68:7)
-```
-
-`google-home-notifier`というパッケージが依存している`google-tts-api`というパッケージのバージョンが古いことが原因です。
-
-#### 手順1
-`node_modules/google-home-notifier/package.json`を開き、上側のようになっている箇所を、下側のように変更してください。
-
-```
-  "dependencies": {
-      "body-parser": "^1.15.2",
-      "castv2-client": "^1.1.2",
-      "express": "^4.14.0",
-      "google-tts-api": "https://github.com/darrencruse/google-tts/tarball/british-voice",
-      "mdns": "^2.3.3",
-      "ngrok": "^2.2.4"
-  },
-```
-
-```
-  "dependencies": {
-      "body-parser": "^1.15.2",
-      "castv2-client": "^1.1.2",
-      "express": "^4.14.0",
-      "google-tts-api": "0.0.4",
-      "mdns": "^2.3.3",
-      "ngrok": "^2.2.4"
-  },
-```
-
-
-具体的には、
-```
-"google-tts-api": "https://github.com/darrencruse/google-tts/tarball/british-voice",
-```
-を、
-```
-"google-tts-api": "0.0.4",
-```
-に変更してください。
-変更前の箇所は `0.0.2` などになっていることがありますが、その場合も　`0.0.4` に変更してください。
-
-#### 手順2
-その後、以下のコマンドで更新してください。
-
-```
-cd node_modules/google-home-notifier
-npm update google-tts-api
-```
